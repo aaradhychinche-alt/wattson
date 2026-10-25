@@ -13,11 +13,13 @@ export function AutoRefresh({ active }: { active: boolean }) {
   }, [active, router]);
 
   return (
-    <span className="inline-flex items-center gap-2 text-xs text-slate-500">
+    <div className="inline-flex items-center gap-2 rounded-[6px] border border-[#292d30] bg-[#000000] px-3 py-1.5 font-mono text-xs text-[#a1a4a5]">
       <span
-        className={`h-1.5 w-1.5 rounded-full ${active ? "animate-pulse bg-sky-400" : "bg-slate-600"}`}
+        className={`h-2 w-2 rounded-full transition-colors ${
+          active ? "animate-pulse bg-[#70b8ff]" : "bg-[#464a4d]"
+        }`}
       />
-      {active ? "Live refresh every 5s" : "No active workflows"}
-    </span>
+      <span>{active ? "Live sync (5s)" : "Static state"}</span>
+    </div>
   );
 }

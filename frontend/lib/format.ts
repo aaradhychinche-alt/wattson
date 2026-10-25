@@ -44,43 +44,45 @@ export function provenanceLabel(provenance: Provenance | string | null | undefin
 }
 
 export function statusTone(status: string): string {
-  switch (status) {
+  switch (status.toLowerCase()) {
     case "completed":
     case "connected":
     case "approved":
-      return "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
+    case "measured":
+    case "ok":
+      return "border-[#292d30] bg-[#000000] text-[#3ad389]";
     case "running":
     case "executing":
     case "awaiting_approval":
-      return "border-sky-500/40 bg-sky-500/10 text-sky-300";
+      return "border-[#292d30] bg-[#000000] text-[#70b8ff]";
     case "failed":
     case "regressed":
     case "error":
-      return "border-rose-500/40 bg-rose-500/10 text-rose-300";
+      return "border-[#292d30] bg-[#000000] text-[#ff9592]";
     case "needs_intervention":
     case "mixed":
-      return "border-amber-500/40 bg-amber-500/10 text-amber-300";
+      return "border-[#292d30] bg-[#000000] text-[#ffca16]";
     case "rejected":
     case "cancelled":
-      return "border-slate-500/40 bg-slate-500/10 text-slate-300";
+      return "border-[#292d30] bg-[#000000] text-[#a1a4a5]";
     case "simulated":
     case "improved":
-      return "border-violet-500/40 bg-violet-500/10 text-violet-300";
+      return "border-[#292d30] bg-[#000000] text-[#9281f7]";
     default:
-      return "border-slate-600/50 bg-slate-800/60 text-slate-300";
+      return "border-[#292d30] bg-[#000000] text-[#f0f0f0]";
   }
 }
 
 export function verdictTone(verdict: string | null | undefined): string {
   switch (verdict) {
     case "improved":
-      return "text-emerald-300";
+      return "text-[#3ad389]";
     case "regressed":
-      return "text-rose-300";
+      return "text-[#ff9592]";
     case "mixed":
-      return "text-amber-300";
+      return "text-[#ffca16]";
     default:
-      return "text-slate-300";
+      return "text-[#f0f0f0]";
   }
 }
 

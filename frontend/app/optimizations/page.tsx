@@ -45,77 +45,82 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
   const constraints = proposal.constraints_snapshot;
 
   return (
-    <Card className="overflow-hidden" >
-      <div id={`proposal-${proposal.id}`} className="scroll-mt-6 border-b border-slate-800/80 bg-slate-950/30 px-5 py-4">
+    <Card className="overflow-hidden">
+      <div id={`proposal-${proposal.id}`} className="scroll-mt-6 border-b border-[#292d30] bg-[#000000] px-5 py-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <StatusBadge status={proposal.status} />
-              <span className="font-mono text-[10px] text-slate-500">{proposal.id.slice(0, 12)}</span>
-              <span className="text-[10px] uppercase tracking-wider text-slate-600">objective: {humanize(proposal.objective)}</span>
+              <span className="font-mono text-[10px] text-[#6e727a]">{proposal.id.slice(0, 12)}</span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[#a1a4a5]">
+                obj: {humanize(proposal.objective)}
+              </span>
             </div>
-            <h2 className="mt-2 text-lg font-semibold text-white">{workloadName}</h2>
-            <p className="mt-1 text-xs text-slate-500">
-              Created {fmtDate(proposal.created_at)} - {proposal.candidates.length} candidates generated
+            <div className="mt-2 flex items-center gap-2">
+              <span className="font-mono text-xs text-[#9281f7]">&gt;</span>
+              <h2 className="text-base font-semibold text-white">{workloadName}</h2>
+            </div>
+            <p className="mt-1 font-mono text-xs text-[#a1a4a5]">
+              Created {fmtDate(proposal.created_at)} — {proposal.candidates.length} candidates evaluated
             </p>
           </div>
           <div className="text-right">
             {proposal.report_id ? (
-              <Link className="btn btn-primary" href={`/reports#report-${proposal.report_id}`}>
-                Open evidence report
+              <Link className="btn btn-ghost px-3 py-1.5" href={`/reports#report-${proposal.report_id}`}>
+                Open Evidence Report &rarr;
               </Link>
             ) : proposal.workflow_id ? (
-              <Link className="btn btn-muted" href={`/workflows#workflow-${proposal.workflow_id}`}>
-                Track workflow
+              <Link className="btn btn-muted px-3 py-1.5" href={`/workflows#workflow-${proposal.workflow_id}`}>
+                Track Workflow &rarr;
               </Link>
             ) : null}
             {proposal.verdict ? (
-              <p className="mt-2 text-xs font-semibold capitalize text-slate-400">Verdict: {proposal.verdict}</p>
+              <p className="mt-2 font-mono text-xs font-semibold capitalize text-[#f0f0f0]">Verdict: {proposal.verdict}</p>
             ) : null}
           </div>
         </div>
       </div>
 
-      <div className="grid gap-5 px-5 py-5 xl:grid-cols-[1.2fr_1fr]">
+      <div className="grid gap-6 px-5 py-5 xl:grid-cols-[1.2fr_1fr]">
         <div className="space-y-4">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sky-400">Selected plan</p>
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9281f7]">Selected Plan</p>
             {selected ? (
-              <div className="mt-2 rounded-xl border border-sky-500/30 bg-sky-500/5 p-4">
+              <div className="mt-2 rounded-[6px] border border-[#292d30] bg-[#000000] p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-base font-semibold text-white">
+                  <p className="font-mono text-sm font-semibold text-white">
                     {selected.config.gpu_count}x {selected.config.gpu_type} / batch {selected.config.batch_size} / {selected.config.precision}
                   </p>
                   <div className="flex items-center gap-2">
-                    <Pill tone="sky">rank {selected.rank ?? "Unavailable"}</Pill>
+                    <Pill tone="iris">rank {selected.rank ?? "Unavailable"}</Pill>
                     <ProvenanceBadge provenance={selected.provenance} />
                   </div>
                 </div>
-                <dl className="mt-3 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+                <dl className="mt-3 grid grid-cols-2 gap-3 font-mono text-xs sm:grid-cols-4">
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wider text-slate-500">Estimated cost</dt>
-                    <dd className="mt-1 font-semibold text-slate-200">{estimateText(selected, "cost_usd")}</dd>
+                    <dt className="text-[10px] uppercase tracking-wider text-[#6e727a]">Est. Cost</dt>
+                    <dd className="mt-1 text-white">{estimateText(selected, "cost_usd")}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wider text-slate-500">Energy</dt>
-                    <dd className="mt-1 font-semibold text-slate-200">{estimateText(selected, "energy_kwh")}</dd>
+                    <dt className="text-[10px] uppercase tracking-wider text-[#6e727a]">Energy</dt>
+                    <dd className="mt-1 text-white">{estimateText(selected, "energy_kwh")}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wider text-slate-500">Latency</dt>
-                    <dd className="mt-1 font-semibold text-slate-200">{estimateText(selected, "latency_ms")}</dd>
+                    <dt className="text-[10px] uppercase tracking-wider text-[#6e727a]">Latency</dt>
+                    <dd className="mt-1 text-white">{estimateText(selected, "latency_ms")}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] uppercase tracking-wider text-slate-500">Throughput</dt>
-                    <dd className="mt-1 font-semibold text-slate-200">{estimateText(selected, "throughput_samples_s")}</dd>
+                    <dt className="text-[10px] uppercase tracking-wider text-[#6e727a]">Throughput</dt>
+                    <dd className="mt-1 text-white">{estimateText(selected, "throughput_samples_s")}</dd>
                   </div>
                 </dl>
-                <p className="mt-3 text-[10px] text-slate-500">
-                  Score {selected.score === null ? "Unavailable" : fmtNumber(selected.score, 4)} after min-max normalization. Estimates are predictions, not measurements.
+                <p className="mt-3 font-mono text-[10px] text-[#6e727a]">
+                  Score {selected.score === null ? "Unavailable" : fmtNumber(selected.score, 4)} via min-max normalization. Estimates represent predictions, not confirmed runtimes.
                 </p>
               </div>
             ) : (
-              <p className="mt-2 rounded-xl border border-dashed border-slate-700 p-4 text-sm text-slate-500">
-                No eligible candidate was selected. Execution is impossible for this plan.
+              <p className="mt-2 rounded-[6px] border border-dashed border-[#292d30] p-4 font-mono text-xs text-[#a1a4a5]">
+                No eligible candidate satisfies all hard constraints.
               </p>
             )}
           </div>
@@ -128,18 +133,21 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
           </div>
 
           <div>
-            <SectionTitle title="Candidate field" hint="Eligibility and scores are computed deterministically. Open to audit every rejection." />
-            <details className="rounded-xl border border-slate-800/70 bg-slate-950/30">
-              <summary className="cursor-pointer list-none px-4 py-3 text-xs font-semibold text-slate-300">
-                {proposal.candidates.length} candidates - {proposal.candidates.filter((c) => c.eligible).length} eligible
+            <SectionTitle
+              title="Candidate Evaluation Field"
+              hint="Scores and eligibility calculated deterministically. Rejections are auditable."
+            />
+            <details className="rounded-[6px] border border-[#292d30] bg-[#000000]">
+              <summary className="cursor-pointer list-none px-4 py-3 font-mono text-xs text-[#f0f0f0] hover:text-white transition-colors">
+                <span className="text-[#9281f7]">&gt;</span> {proposal.candidates.length} candidates — {proposal.candidates.filter((c) => c.eligible).length} eligible
               </summary>
-              <div className="table-shell border-0 border-t border-slate-800/70">
+              <div className="table-shell border-0 border-t border-[#292d30] rounded-none">
                 <table className="data-table">
                   <thead>
                     <tr>
                       <th>Rank</th>
-                      <th>Config</th>
-                      <th>Est. cost</th>
+                      <th>Configuration</th>
+                      <th>Est. Cost</th>
                       <th>Runtime</th>
                       <th>Score</th>
                       <th>Eligibility</th>
@@ -149,20 +157,24 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
                     {ranked.map((candidate) => {
                       const isSelected = candidate.id === proposal.selected_candidate_id;
                       return (
-                        <tr key={candidate.id} className={isSelected ? "bg-sky-500/10" : ""}>
-                          <td className="text-xs">{candidate.rank ?? "-"}</td>
-                          <td className="text-xs">
+                        <tr key={candidate.id} className={isSelected ? "bg-[#0b0e14]" : ""}>
+                          <td className="font-mono text-xs">{candidate.rank ?? "-"}</td>
+                          <td className="font-mono text-xs">
                             {candidate.config.gpu_count}x {candidate.config.gpu_type} / {candidate.config.batch_size} / {candidate.config.precision}
-                            {isSelected ? <span className="ml-2 rounded bg-sky-500/20 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-sky-200">selected</span> : null}
+                            {isSelected ? (
+                              <span className="ml-2 rounded-[4px] border border-[#9281f7]/50 bg-[#9281f7]/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-[#9281f7]">
+                                selected
+                              </span>
+                            ) : null}
                           </td>
-                          <td className="text-xs">{estimateText(candidate, "cost_usd")}</td>
-                          <td className="text-xs">{candidate.runtime_hours === null ? "Unavailable" : `${fmtNumber(candidate.runtime_hours, 2)} h`}</td>
-                          <td className="text-xs">{candidate.score === null ? "Unavailable" : fmtNumber(candidate.score, 4)}</td>
-                          <td className="text-xs">
+                          <td className="font-mono text-xs">{estimateText(candidate, "cost_usd")}</td>
+                          <td className="font-mono text-xs">{candidate.runtime_hours === null ? "Unavailable" : `${fmtNumber(candidate.runtime_hours, 2)} h`}</td>
+                          <td className="font-mono text-xs">{candidate.score === null ? "Unavailable" : fmtNumber(candidate.score, 4)}</td>
+                          <td className="font-mono text-xs">
                             {candidate.eligible ? (
-                              <span className="text-emerald-300">eligible</span>
+                              <span className="text-[#3ad389]">eligible</span>
                             ) : (
-                              <ul className="space-y-1 text-slate-500">
+                              <ul className="space-y-1 text-[#a1a4a5]">
                                 {candidate.constraint_failures.map((failure) => (
                                   <li key={failure.code} title={failure.code}>{failure.message}</li>
                                 ))}
@@ -182,26 +194,26 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
         <div className="space-y-4">
           <div>
             <SectionTitle
-              title="Analysis"
-              hint={isAi ? "External model output. Treated as untrusted and validated before use." : "Deterministic fallback. No external model output is presented as fact."}
-              right={<Pill tone={isAi ? "violet" : "slate"}>{isAi ? "Gemma" : "deterministic"}</Pill>}
+              title="Analysis Synthesis"
+              hint={isAi ? "External model output. Validated before use." : "Deterministic fallback. No external model output presented as fact."}
+              right={<Pill tone={isAi ? "iris" : "default"}>{isAi ? "Gemma Model" : "Deterministic"}</Pill>}
             />
-            <div className="rounded-xl border border-slate-800/70 bg-slate-950/30 p-4 text-xs">
-              <p className="text-slate-500">
-                source: <span className="font-mono text-slate-300">{analysis.source ?? "Unavailable"}</span>
-                {analysis.model ? <> / model: <span className="font-mono text-slate-300">{analysis.model}</span></> : null}
+            <div className="rounded-[6px] border border-[#292d30] bg-[#000000] p-4 font-mono text-xs">
+              <p className="text-[#a1a4a5]">
+                source: <span className="text-white">{analysis.source ?? "Unavailable"}</span>
+                {analysis.model ? <> / model: <span className="text-[#9281f7]">{analysis.model}</span></> : null}
               </p>
               {analysis.fallback_reason ? (
-                <p className="mt-1 text-amber-300/80">fallback: {analysis.fallback_reason}</p>
+                <p className="mt-1 text-[#ffca16]">fallback: {analysis.fallback_reason}</p>
               ) : null}
 
               {payload?.observed_facts?.length ? (
                 <div className="mt-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Observed facts</p>
-                  <ul className="mt-1 space-y-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#6e727a]">Observed facts</p>
+                  <ul className="mt-1 space-y-1.5 text-xs text-[#f0f0f0]">
                     {payload.observed_facts.map((fact, index) => (
-                      <li key={`${fact.statement}-${index}`} className="leading-5 text-slate-300">
-                        {fact.statement} <span className="text-slate-600">[{fact.evidence}]</span>
+                      <li key={`${fact.statement}-${index}`} className="leading-relaxed">
+                        • {fact.statement} <span className="text-[#6e727a]">[{fact.evidence}]</span>
                       </li>
                     ))}
                   </ul>
@@ -210,11 +222,11 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
 
               {payload?.hypotheses?.length ? (
                 <div className="mt-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Hypotheses</p>
-                  <ul className="mt-1 space-y-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#6e727a]">Hypotheses</p>
+                  <ul className="mt-1 space-y-1.5 text-xs text-[#a1a4a5]">
                     {payload.hypotheses.map((hypothesis, index) => (
-                      <li key={`${hypothesis.statement}-${index}`} className="leading-5 text-slate-400">
-                        {hypothesis.statement} <span className="text-slate-600">({Math.round(hypothesis.confidence * 100)}%)</span>
+                      <li key={`${hypothesis.statement}-${index}`} className="leading-relaxed">
+                        • {hypothesis.statement} <span className="text-[#6e727a]">({Math.round(hypothesis.confidence * 100)}%)</span>
                       </li>
                     ))}
                   </ul>
@@ -223,11 +235,11 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
 
               {payload?.missing_info?.length ? (
                 <div className="mt-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Missing information</p>
-                  <ul className="mt-1 space-y-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#6e727a]">Missing information</p>
+                  <ul className="mt-1 space-y-1.5 text-xs text-[#ffca16]">
                     {payload.missing_info.map((item, index) => (
-                      <li key={`${item.item}-${index}`} className="leading-5 text-amber-300/80">
-                        {item.item}: <span className="text-slate-500">{item.why_it_matters}</span>
+                      <li key={`${item.item}-${index}`} className="leading-relaxed">
+                        • {item.item}: <span className="text-[#a1a4a5]">{item.why_it_matters}</span>
                       </li>
                     ))}
                   </ul>
@@ -235,60 +247,65 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
               ) : null}
 
               {payload?.proposed_tweak ? (
-                <p className="mt-3 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 leading-5 text-slate-400">
-                  Tweak suggestion: <span className="font-mono text-slate-200">{payload.proposed_tweak.field}</span> ={" "}
-                  <span className="font-mono text-slate-200">{valueText(payload.proposed_tweak.value)}</span>
-                  <span className="mt-1 block text-slate-600">{payload.proposed_tweak.rationale}</span>
+                <p className="mt-3 rounded-[6px] border border-[#292d30] bg-[#0b0e14] px-3 py-2 text-xs text-[#a1a4a5]">
+                  Tweak suggestion: <span className="text-white">{payload.proposed_tweak.field}</span> ={" "}
+                  <span className="text-[#9281f7]">{valueText(payload.proposed_tweak.value)}</span>
+                  <span className="mt-1 block text-[#6e727a]">{payload.proposed_tweak.rationale}</span>
                 </p>
               ) : null}
 
-              <p className="mt-3 border-t border-slate-800/70 pt-2 text-[10px] leading-4 text-slate-600">
-                Model text cannot change constraints, budgets, or the selected candidate. Policy validation and the execution guard make the final decision.
+              <p className="mt-3 border-t border-[#292d30] pt-2 text-[10px] leading-relaxed text-[#6e727a]">
+                AI synthesis cannot alter hard constraints or budget limits. Policy validation governs execution eligibility.
               </p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-800/70 bg-slate-950/30 p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">Decision and execution</p>
+          {/* Decision and Execution Box */}
+          <div className="rounded-[6px] border border-[#292d30] bg-[#000000] p-4">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#a1a4a5]">
+              Decision & Execution Gate
+            </p>
             {proposal.approval ? (
-              <div className="mt-2 text-xs leading-5 text-slate-400">
+              <div className="mt-2 font-mono text-xs leading-relaxed text-[#a1a4a5]">
                 <p>
-                  <span className={`font-semibold ${proposal.approval.decision === "approved" ? "text-emerald-300" : "text-rose-300"}`}>
+                  <span className={`font-semibold ${proposal.approval.decision === "approved" ? "text-[#3ad389]" : "text-[#ff9592]"}`}>
                     {humanize(proposal.approval.decision)}
                   </span>{" "}
                   by {proposal.approval.actor} at {fmtDate(proposal.approval.created_at)}
                 </p>
-                <p className="mt-1 text-slate-500">Reason: {proposal.approval.reason || "No reason supplied."}</p>
+                <p className="mt-1 text-[#6e727a]">Reason: {proposal.approval.reason || "No reason supplied."}</p>
               </div>
             ) : proposal.status === "awaiting_approval" ? (
-              <p className="mt-2 text-xs leading-5 text-amber-300/80">
-                BLOCKED: waiting for a recorded human decision. Nothing is launched until approval is persisted.
+              <p className="mt-2 font-mono text-xs leading-relaxed text-[#baa7ff]">
+                BLOCKED: Waiting for recorded human decision. Workload cannot execute until approval is persisted in ledger.
               </p>
             ) : (
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                {proposal.workflow_id ? "No decision recorded yet." : "Start the workflow to reach the approval gate."}
+              <p className="mt-2 font-mono text-xs leading-relaxed text-[#6e727a]">
+                {proposal.workflow_id ? "No decision recorded yet." : "Launch workflow to initiate the approval gate."}
               </p>
             )}
 
             {proposal.error ? (
-              <p className="mt-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-200">{proposal.error}</p>
+              <p className="mt-2 rounded-[6px] border border-[#ff9592]/50 bg-[#000000] px-3 py-2 font-mono text-xs text-[#ff9592]">
+                {proposal.error}
+              </p>
             ) : null}
 
             {canStart ? (
-              <form action={startWorkflowAction} className="mt-3">
+              <form action={startWorkflowAction} className="mt-4">
                 <input type="hidden" name="proposalId" value={proposal.id} />
-                <button className="btn btn-primary w-full" type="submit">
-                  Start workflow and request approval
+                <button className="btn btn-ghost w-full py-2" type="submit">
+                  Start Workflow & Request Approval &rarr;
                 </button>
               </form>
             ) : null}
 
             {canDecide ? (
-              <div className="mt-3 space-y-3">
-                <form action={approveAction} className="space-y-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+              <div className="mt-4 space-y-3 font-mono">
+                <form action={approveAction} className="space-y-2 rounded-[6px] border border-[#3ad389]/40 bg-[#000000] p-3">
                   <input type="hidden" name="proposalId" value={proposal.id} />
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-emerald-300" htmlFor={`approve-reason-${proposal.id}`}>
-                    Approval reason
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#3ad389]" htmlFor={`approve-reason-${proposal.id}`}>
+                    Approval Rationale
                   </label>
                   <input
                     className="field"
@@ -298,18 +315,18 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
                     required
                     minLength={3}
                   />
-                  <label className="flex items-start gap-2 text-[10px] leading-4 text-slate-400">
-                    <input className="mt-0.5" name="confirm" type="checkbox" required />
-                    I understand this records a human approval and may incur real provider charges when a live provider is configured.
+                  <label className="flex items-start gap-2 text-[10px] leading-relaxed text-[#a1a4a5]">
+                    <input className="mt-0.5 accent-[#3ad389]" name="confirm" type="checkbox" required />
+                    Confirm recorded approval authorizing cloud provider execution.
                   </label>
-                  <button className="btn btn-primary w-full border-emerald-500/50 bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/25" type="submit">
-                    Record approval
+                  <button className="btn btn-ghost w-full border-[#3ad389]/60 text-[#3ad389] hover:border-[#3ad389] hover:bg-[#3ad389]/10" type="submit">
+                    Record Approval & Proceed
                   </button>
                 </form>
-                <form action={rejectAction} className="space-y-2 rounded-lg border border-rose-500/30 bg-rose-500/5 p-3">
+                <form action={rejectAction} className="space-y-2 rounded-[6px] border border-[#ff9592]/40 bg-[#000000] p-3">
                   <input type="hidden" name="proposalId" value={proposal.id} />
-                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-rose-300" htmlFor={`reject-reason-${proposal.id}`}>
-                    Rejection reason
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-[#ff9592]" htmlFor={`reject-reason-${proposal.id}`}>
+                    Rejection Rationale
                   </label>
                   <input
                     className="field"
@@ -320,7 +337,7 @@ function ProposalCard({ proposal, workloadName }: { proposal: Proposal; workload
                     minLength={3}
                   />
                   <button className="btn btn-danger w-full" type="submit">
-                    Record rejection
+                    Record Rejection
                   </button>
                 </form>
               </div>
@@ -348,10 +365,10 @@ export default async function OptimizationsPage({
   const active = proposals.items.some((proposal) => !FINAL_STATUSES.has(proposal.status));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <PageHeader
-        eyebrow="ANALYZE AND SIMULATE"
-        title="Plans, candidates, and approvals"
+        eyebrow="02_ANALYZE_&_SIMULATE"
+        title="Plans, Candidates & Approvals"
         description="The optimizer ranks only eligible configurations. Every estimate is labelled predicted or simulated, and every launch waits for a recorded human decision."
         action={<AutoRefresh active={active} />}
       />
@@ -360,33 +377,33 @@ export default async function OptimizationsPage({
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Proposals</p>
-          <p className="mt-2 text-3xl font-semibold text-white">{proposals.total}</p>
-          <p className="mt-1 text-xs text-slate-500">Deterministic, reproducible plans</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#a1a4a5]">Proposals</p>
+          <p className="mt-3 text-3xl font-normal tracking-tight text-white">{proposals.total}</p>
+          <p className="mt-1 font-mono text-[11px] text-[#6e727a]">Deterministic, reproducible plans</p>
         </Card>
         <Card className="p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Awaiting approval</p>
-          <p className="mt-2 text-3xl font-semibold text-amber-300">{awaiting}</p>
-          <p className="mt-1 text-xs text-slate-500">Execution deliberately blocked</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#a1a4a5]">Awaiting Approval</p>
+          <p className="mt-3 text-3xl font-normal tracking-tight text-[#baa7ff]">{awaiting}</p>
+          <p className="mt-1 font-mono text-[11px] text-[#6e727a]">Execution deliberately blocked</p>
         </Card>
         <Card className="p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Past approval gate</p>
-          <p className="mt-2 text-3xl font-semibold text-white">{executed}</p>
-          <p className="mt-1 text-xs text-slate-500">Executed, failed, or completed</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#a1a4a5]">Past Approval Gate</p>
+          <p className="mt-3 text-3xl font-normal tracking-tight text-white">{executed}</p>
+          <p className="mt-1 font-mono text-[11px] text-[#6e727a]">Executed, failed, or completed</p>
         </Card>
       </div>
 
       {proposals.items.length === 0 ? (
         <EmptyState
           title="No optimization proposals"
-          body="Open a workload and create a deterministic proposal. The optimizer will generate candidates and apply hard constraints."
+          body="Open a workload and create a proposal. The optimizer will generate candidates and enforce hard constraints."
         />
       ) : (
         <section className="space-y-6">
           <SectionTitle
-            title="Proposal ledger"
+            title="Proposal Ledger"
             hint="Approval controls appear only when a workflow is blocked at the approval gate."
-            right={<Link className="text-xs font-semibold text-sky-300 hover:underline" href="/workloads">Create from a workload</Link>}
+            right={<Link className="font-mono text-xs text-[#9281f7] hover:underline" href="/workloads">Create from workload &gt;</Link>}
           />
           {proposals.items.map((proposal) => (
             <ProposalCard

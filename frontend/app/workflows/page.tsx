@@ -45,10 +45,10 @@ function stageState(workflow: Workflow, stage: string): "done" | "current" | "pe
 }
 
 const stageStyles: Record<string, string> = {
-  done: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-  current: "border-sky-500/40 bg-sky-500/15 text-sky-200",
-  pending: "border-slate-800 bg-slate-950/40 text-slate-600",
-  failed: "border-rose-500/40 bg-rose-500/10 text-rose-200",
+  done: "border-[#3ad389]/40 bg-[#000000] text-[#3ad389]",
+  current: "border-[#70b8ff]/60 bg-[#0b0e14] text-[#70b8ff]",
+  pending: "border-[#292d30] bg-[#000000] text-[#464a4d]",
+  failed: "border-[#ff9592]/50 bg-[#000000] text-[#ff9592]",
 };
 
 export default async function WorkflowsPage({
@@ -63,11 +63,11 @@ export default async function WorkflowsPage({
   const active = workflows.items.some((workflow) => workflow.status === "running");
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <PageHeader
-        eyebrow="APPROVE AND EXECUTE"
-        title="Temporal workflows"
-        description="A deterministic workflow records each stage, blocks on a human signal, revalidates every safety condition, then launches once with an idempotency key."
+        eyebrow="05_EXECUTE"
+        title="Temporal Workflows"
+        description="A deterministic workflow records each stage transition, blocks on a human signal, revalidates safety preconditions, then launches idempotently."
         action={<AutoRefresh active={active} />}
       />
 
@@ -75,36 +75,36 @@ export default async function WorkflowsPage({
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card className="p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Workflows</p>
-          <p className="mt-2 text-3xl font-semibold text-white">{workflows.total}</p>
-          <p className="mt-1 text-xs text-slate-500">Durable Temporal executions</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#a1a4a5]">Workflows</p>
+          <p className="mt-3 text-3xl font-normal tracking-tight text-white">{workflows.total}</p>
+          <p className="mt-1 font-mono text-[11px] text-[#6e727a]">Durable state machines</p>
         </Card>
         <Card className="p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Running</p>
-          <p className="mt-2 text-3xl font-semibold text-sky-300">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#a1a4a5]">Running State</p>
+          <p className="mt-3 text-3xl font-normal tracking-tight text-[#70b8ff]">
             {workflows.items.filter((workflow) => workflow.status === "running").length}
           </p>
-          <p className="mt-1 text-xs text-slate-500">Waiting, executing, or verifying</p>
+          <p className="mt-1 font-mono text-[11px] text-[#6e727a]">Waiting, executing, or verifying</p>
         </Card>
         <Card className="p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">Retries observed</p>
-          <p className="mt-2 text-3xl font-semibold text-white">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#a1a4a5]">Observed Retries</p>
+          <p className="mt-3 text-3xl font-normal tracking-tight text-white">
             {workflows.items.reduce((sum, workflow) => sum + workflow.retries, 0)}
           </p>
-          <p className="mt-1 text-xs text-slate-500">Recorded activity retries</p>
+          <p className="mt-1 font-mono text-[11px] text-[#6e727a]">Recorded activity attempts</p>
         </Card>
       </div>
 
       {workflows.items.length === 0 ? (
         <EmptyState
           title="No workflows"
-          body="Start a proposal from the optimizations page. The workflow will wait at the approval gate."
+          body="Start a proposal from the optimizations page. The workflow will proceed until the approval gate."
         />
       ) : (
-        <section className="space-y-5">
+        <section className="space-y-6">
           <SectionTitle
-            title="Execution ledger"
-            hint="Stage progress is persisted independently of the API process. Retries do not duplicate launches."
+            title="Execution Ledger"
+            hint="Stage progress is persisted independently of API process state. Retries do not duplicate cloud jobs."
           />
           {workflows.items.map((workflow) => {
             const lastNote = typeof workflow.meta.last_note === "string" ? workflow.meta.last_note : "";
@@ -112,47 +112,51 @@ export default async function WorkflowsPage({
             const terminal = TERMINAL.has(workflow.status);
             return (
               <Card key={workflow.workflow_id} className="overflow-hidden">
-                <div id={`workflow-${workflow.workflow_id}`} className="scroll-mt-6 border-b border-slate-800/80 bg-slate-950/30 px-5 py-4">
+                <div id={`workflow-${workflow.workflow_id}`} className="scroll-mt-6 border-b border-[#292d30] bg-[#000000] px-5 py-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge status={workflow.status} />
                         {workflow.verdict ? <StatusBadge status={workflow.verdict} /> : null}
-                        {cancelRequested ? <Pill tone="violet">cancel requested</Pill> : null}
+                        {cancelRequested ? <Pill tone="iris">cancel requested</Pill> : null}
                       </div>
-                      <p className="mt-2 break-all font-mono text-xs text-slate-300">{workflow.workflow_id}</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        Proposal {workflow.proposal_id.slice(0, 12)} - started {fmtDate(workflow.created_at)}
+                      <p className="mt-2 break-all font-mono text-xs text-white">{workflow.workflow_id}</p>
+                      <p className="mt-1 font-mono text-xs text-[#a1a4a5]">
+                        Proposal {workflow.proposal_id.slice(0, 12)} — started {fmtDate(workflow.created_at)}
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
                       {workflow.report_id ? (
-                        <Link className="btn btn-primary" href={`/reports#report-${workflow.report_id}`}>Report</Link>
+                        <Link className="btn btn-ghost px-3 py-1.5" href={`/reports#report-${workflow.report_id}`}>
+                          View Report &rarr;
+                        </Link>
                       ) : null}
-                      <Link className="btn btn-muted" href={`/optimizations#proposal-${workflow.proposal_id}`}>Proposal</Link>
+                      <Link className="btn btn-muted px-3 py-1.5" href={`/optimizations#proposal-${workflow.proposal_id}`}>
+                        Proposal &rarr;
+                      </Link>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-4 px-5 py-5">
-                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
-                    <span>Stage <span className="font-semibold text-slate-200">{humanize(workflow.live_stage ?? workflow.stage)}</span></span>
-                    <span>Retries <span className="font-semibold text-slate-200">{workflow.retries}</span></span>
-                    <span>Run <span className="font-mono text-slate-300">{workflow.run_id ? workflow.run_id.slice(0, 12) : "not launched"}</span></span>
-                    <span>Updated <span className="text-slate-300">{fmtDate(workflow.updated_at)}</span></span>
+                  <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-xs text-[#a1a4a5]">
+                    <span>Stage: <span className="text-white">{humanize(workflow.live_stage ?? workflow.stage)}</span></span>
+                    <span>Retries: <span className="text-white">{workflow.retries}</span></span>
+                    <span>Run ID: <span className="text-[#9281f7]">{workflow.run_id ? workflow.run_id.slice(0, 12) : "not launched"}</span></span>
+                    <span>Updated: <span className="text-white">{fmtDate(workflow.updated_at)}</span></span>
                     {proposalNames.get(workflow.proposal_id) ? (
-                      <span>Workload <span className="font-mono text-slate-300">{proposalNames.get(workflow.proposal_id)?.slice(0, 10)}</span></span>
+                      <span>Workload: <span className="text-[#f0f0f0]">{proposalNames.get(workflow.proposal_id)?.slice(0, 10)}</span></span>
                     ) : null}
                   </div>
 
                   <div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5 font-mono">
                       {STAGES.map((stage) => {
                         const state = stageState(workflow, stage);
                         return (
                           <span
                             key={stage}
-                            className={`rounded-md border px-2 py-1 text-[10px] font-medium ${stageStyles[state]}`}
+                            className={`rounded-[6px] border px-2 py-1 text-[10px] font-medium transition-colors ${stageStyles[state]}`}
                             title={`${stage}: ${state}`}
                           >
                             {humanize(stage)}
@@ -160,27 +164,27 @@ export default async function WorkflowsPage({
                         );
                       })}
                     </div>
-                    {lastNote ? <p className="mt-2 text-xs leading-5 text-slate-500">{lastNote}</p> : null}
+                    {lastNote ? <p className="mt-2 font-mono text-xs text-[#6e727a]">{lastNote}</p> : null}
                   </div>
 
                   {workflow.last_error ? (
-                    <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs leading-5 text-rose-200">
+                    <div className="rounded-[6px] border border-[#ff9592]/50 bg-[#000000] px-3 py-2 font-mono text-xs text-[#ff9592]">
                       <span className="font-semibold uppercase tracking-wider">Last error: </span>
                       {workflow.last_error}
                     </div>
                   ) : null}
 
                   {workflow.status === "running" && workflow.stage === "awaiting_approval" ? (
-                    <p className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-5 text-amber-200">
-                      The workflow is blocked at the approval gate. Record a decision on the optimizations page to continue or reject.
+                    <p className="rounded-[6px] border border-[#baa7ff]/40 bg-[#000000] px-3.5 py-2.5 font-mono text-xs leading-relaxed text-[#baa7ff]">
+                      BLOCKED: The workflow is paused at the approval gate. Record an approval or rejection in the optimizer plans tab to proceed.
                     </p>
                   ) : null}
 
                   {workflow.status === "running" ? (
-                    <form action={cancelWorkflowAction} className="flex flex-col gap-2 rounded-xl border border-slate-800/70 bg-slate-950/30 p-3 sm:flex-row sm:items-end">
+                    <form action={cancelWorkflowAction} className="flex flex-col gap-2 rounded-[6px] border border-[#292d30] bg-[#000000] p-3 sm:flex-row sm:items-end">
                       <input type="hidden" name="workflowId" value={workflow.workflow_id} />
                       <div className="flex-1">
-                        <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500" htmlFor={`cancel-${workflow.workflow_id}`}>
+                        <label className="block font-mono text-[10px] font-semibold uppercase tracking-wider text-[#a1a4a5]" htmlFor={`cancel-${workflow.workflow_id}`}>
                           Cancellation reason
                         </label>
                         <input
@@ -191,12 +195,14 @@ export default async function WorkflowsPage({
                           maxLength={500}
                         />
                       </div>
-                      <button className="btn btn-danger" type="submit">Request cancellation</button>
+                      <button className="btn btn-danger" type="submit">
+                        Request Cancellation
+                      </button>
                     </form>
                   ) : null}
 
                   {!terminal && workflow.status !== "running" ? (
-                    <p className={`text-xs ${statusTone(workflow.status)}`}>Workflow state: {humanize(workflow.status)}</p>
+                    <p className={`font-mono text-xs ${statusTone(workflow.status)}`}>Workflow state: {humanize(workflow.status)}</p>
                   ) : null}
                 </div>
               </Card>

@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 
 const items = [
   { href: "/", label: "Overview", hint: "Loop status" },
-  { href: "/workloads", label: "Workloads", hint: "Inputs and constraints" },
-  { href: "/optimizations", label: "Optimizations", hint: "Plans and approvals" },
+  { href: "/workloads", label: "Workloads", hint: "Inputs & constraints" },
+  { href: "/optimizations", label: "Optimizations", hint: "Plans & approvals" },
   { href: "/workflows", label: "Workflows", hint: "Temporal execution" },
   { href: "/reports", label: "Reports", hint: "Verified evidence" },
-  { href: "/settings", label: "Settings", hint: "Safety and integrations" },
+  { href: "/settings", label: "Settings", hint: "Safety & integrations" },
 ];
 
 export function SidebarNav() {
@@ -22,25 +22,28 @@ export function SidebarNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`group flex items-center gap-3 rounded-xl border px-3 py-2.5 transition ${
+            className={`group flex items-center gap-3 rounded-[6px] border px-3 py-2.5 transition-all duration-150 ${
               active
-                ? "border-sky-500/40 bg-sky-500/10 text-white"
-                : "border-transparent text-slate-400 hover:border-slate-800 hover:bg-slate-900/60 hover:text-slate-200"
+                ? "border-[#292d30] bg-[#0b0e14] text-white"
+                : "border-transparent text-[#a1a4a5] hover:border-[#292d30] hover:bg-[#0b0e14]/50 hover:text-white"
             }`}
           >
             <span
-              className={`flex h-7 w-7 items-center justify-center rounded-lg border text-[10px] font-bold ${
+              className={`flex h-6 w-6 items-center justify-center rounded-[6px] border font-mono text-[10px] ${
                 active
-                  ? "border-sky-400/40 bg-sky-400/10 text-sky-300"
-                  : "border-slate-800 bg-slate-900 text-slate-500 group-hover:text-slate-300"
+                  ? "border-[#9281f7]/50 bg-[#9281f7]/10 text-[#9281f7]"
+                  : "border-[#292d30] bg-[#000000] text-[#6e727a] group-hover:border-[#6e727a] group-hover:text-[#a1a4a5]"
               }`}
             >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span>
-              <span className="block text-sm font-medium">{item.label}</span>
-              <span className="block text-[11px] text-slate-500">{item.hint}</span>
-            </span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-sm font-medium tracking-tight">{item.label}</span>
+              <span className="block font-mono text-[11px] text-[#6e727a]">{item.hint}</span>
+            </div>
+            {active ? (
+              <span className="h-1.5 w-1.5 rounded-full bg-[#9281f7]" />
+            ) : null}
           </Link>
         );
       })}
@@ -58,10 +61,10 @@ export function MobileNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium ${
+            className={`shrink-0 rounded-[6px] border px-3 py-1.5 font-mono text-xs transition-colors ${
               active
-                ? "border-sky-500/40 bg-sky-500/10 text-sky-200"
-                : "border-slate-800 bg-slate-900/60 text-slate-400"
+                ? "border-[#9281f7]/60 bg-[#0b0e14] text-white"
+                : "border-[#292d30] bg-[#000000] text-[#a1a4a5] hover:text-white"
             }`}
           >
             {item.label}
