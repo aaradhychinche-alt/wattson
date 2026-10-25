@@ -1,0 +1,33 @@
+name: wattson
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: wattson
+      POSTGRES_PASSWORD: wattson
+      POSTGRES_DB: wattson
+    volumes:
+      - wattson_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wattson -d wattson"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  backend:
+    environment:
+      WATTSON_DATABASE_URL: postgresql+psycopg://wattson:wattson@postgres:5432/wattson
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    environment:
+      WATTSON_DATABASE_URL: postgresql+psycopg://wattson:wattson@postgres:5432/wattson
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  wattson_pgdata:

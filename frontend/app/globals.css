@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: theme("colors.slate.800");
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1000px 600px at 12% -10%, rgba(14, 165, 233, 0.14), transparent 60%),
+    radial-gradient(800px 500px at 95% 0%, rgba(139, 92, 246, 0.12), transparent 55%),
+    #070b14;
+  color: #e2e8f0;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.3);
+}
+
+@layer components {
+  .table-shell {
+    @apply overflow-x-auto rounded-2xl border border-slate-800/90;
+  }
+
+  .data-table {
+    @apply w-full min-w-[720px] border-collapse text-left text-sm;
+  }
+
+  .data-table thead th {
+    @apply border-b border-slate-800 bg-slate-900/80 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500;
+  }
+
+  .data-table tbody td {
+    @apply border-b border-slate-800/60 px-4 py-3 align-top text-slate-300;
+  }
+
+  .data-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .data-table tbody tr:hover {
+    @apply bg-slate-900/40;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply border-sky-500/50 bg-sky-500/15 text-sky-200 hover:bg-sky-500/25;
+  }
+
+  .btn-danger {
+    @apply border-rose-500/50 bg-rose-500/10 text-rose-200 hover:bg-rose-500/20;
+  }
+
+  .btn-muted {
+    @apply border-slate-700 bg-slate-800/60 text-slate-300 hover:bg-slate-800;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 outline-none focus:border-sky-500/60;
+  }
+}

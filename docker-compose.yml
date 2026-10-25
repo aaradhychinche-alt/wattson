@@ -1,0 +1,93 @@
+name: wattson
+
+x-backend-env: &backend-env
+  WATTSON_API_TOKEN: ${WATTSON_API_TOKEN:-wattson-demo-token}
+  WATTSON_DATABASE_URL: sqlite:////app/.data/wattson.db
+  WATTSON_TEMPORAL_HOST: temporal:7233
+  WATTSON_TEMPORAL_NAMESPACE: default
+  WATTSON_TEMPORAL_TASK_QUEUE: wattson
+  WATTSON_PROVIDER: ${WATTSON_PROVIDER:-simulator}
+  WATTSON_AI_PROVIDER: ${WATTSON_AI_PROVIDER:-none}
+  GEMMA_MODEL: ${GEMMA_MODEL:-}
+  OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+  HOSTED_GEMMA_API_KEY: ${HOSTED_GEMMA_API_KEY:-}
+  WATTSON_KILL_SWITCH: ${WATTSON_KILL_SWITCH:-false}
+  WATTSON_REPORT_DIR: /app/.data/reports
+  WATTSON_ASSUMPTIONS_PATH: /app/simulator_assumptions.yaml
+
+services:
+  temporal:
+    image: temporalio/temporal:latest
+    command:
+      - server
+      - start-dev
+      - --ip
+      - 0.0.0.0
+      - --db-filename
+      - /data/temporal.db
+    ports:
+      - "${WATTSON_TEMPORAL_PORT:-7233}:7233"
+      - "${WATTSON_TEMPORAL_UI_PORT:-8233}:8233"
+    volumes:
+      - temporal_data:/data
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "localhost:7233"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+      - sh
+      - -c
+      - alembic upgrade head && uvicorn wattson.api.app:app --host 0.0.0.0 --port 8000
+    environment:
+      <<: *backend-env
+    ports:
+      - "${WATTSON_API_PORT:-8000}:8000"
+    volumes:
+      - wattson_data:/app/.data
+    depends_on:
+      temporal:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["python", "-m", "wattson.worker"]
+    environment:
+      <<: *backend-env
+    volumes:
+      - wattson_data:/app/.data
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    environment:
+      WATTSON_API_URL: http://backend:8000
+      WATTSON_API_TOKEN: ${WATTSON_API_TOKEN:-wattson-demo-token}
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "${WATTSON_FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  wattson_data:
+  temporal_data:

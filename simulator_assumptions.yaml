@@ -1,0 +1,80 @@
+# WATTSON simulator assumptions.
+#
+# EVERY numeric value is an illustrative assumption unless a future revision
+# replaces it with {value: ..., basis: cited, source: "..."}. None of these
+# numbers are vendor quotes or measured benchmarks. They exist only to make the
+# deterministic simulator exercise the full MEASURE -> VERIFY loop without
+# spending money. See docs/OPTIMIZER.md and docs/VERIFIED.md.
+version: 1
+currency: USD
+disclaimer: "Illustrative values only. Not pricing, not benchmarks."
+
+gpus:
+  L4:
+    hourly_usd: {value: 0.44, basis: illustrative}
+    tdp_watts: {value: 72, basis: illustrative}
+    memory_gb: {value: 24, basis: illustrative}
+    base_samples_per_second: {value: 420, basis: illustrative}
+  A100:
+    hourly_usd: {value: 1.89, basis: illustrative}
+    tdp_watts: {value: 250, basis: illustrative}
+    memory_gb: {value: 80, basis: illustrative}
+    base_samples_per_second: {value: 900, basis: illustrative}
+  H100:
+    hourly_usd: {value: 3.49, basis: illustrative}
+    tdp_watts: {value: 350, basis: illustrative}
+    memory_gb: {value: 80, basis: illustrative}
+    base_samples_per_second: {value: 1450, basis: illustrative}
+
+simulation:
+  utilization: {value: 0.85, basis: illustrative}
+  pue: {value: 1.15, basis: illustrative}
+  storage_gb: {value: 100, basis: illustrative}
+  storage_usd_per_gb_hour: {value: 0.00003, basis: illustrative}
+  cold_start_seconds: {value: 90, basis: illustrative}
+  cold_start_usd_per_hour: {value: 0.0, basis: illustrative}
+  max_candidates: {value: 24, basis: illustrative}
+  max_gpus_per_candidate: {value: 2, basis: illustrative}
+  jitter_fraction: {value: 0.02, basis: illustrative}
+  default_dataset_samples: {value: 2500000, basis: illustrative}
+  default_budget_usd: {value: 8.0, basis: illustrative}
+  default_max_runtime_hours: {value: 6.0, basis: illustrative}
+  default_deadline_hours: {value: 48.0, basis: illustrative}
+
+precision_speed:
+  fp16: {value: 1.0, basis: illustrative}
+  bf16: {value: 0.98, basis: illustrative}
+  int8: {value: 1.55, basis: illustrative}
+
+checkpoint_throughput_factor:
+  "false": {value: 1.0, basis: illustrative}
+  "true": {value: 0.92, basis: illustrative}
+
+batch_efficiency:
+  "16": {value: 0.85, basis: illustrative}
+  "32": {value: 1.0, basis: illustrative}
+  "64": {value: 1.08, basis: illustrative}
+  "128": {value: 1.02, basis: illustrative}
+
+# Execution profiles model the difference between a planning estimate and what
+# a run actually observes. Scenario B ("throttled_execution") uses a noisy
+# neighbour profile so a plan that looked cheaper measures worse. These are
+# simulator-only multipliers, never applied to real provider results.
+profiles:
+  nominal:
+    throughput_multiplier: {value: 1.0, basis: illustrative}
+    latency_multiplier: {value: 1.0, basis: illustrative}
+    cost_multiplier: {value: 1.0, basis: illustrative}
+  throttled_execution:
+    throughput_multiplier: {value: 0.38, basis: illustrative}
+    latency_multiplier: {value: 2.6, basis: illustrative}
+    cost_multiplier: {value: 1.0, basis: illustrative}
+  noisy_neighbour:
+    throughput_multiplier: {value: 0.62, basis: illustrative}
+    latency_multiplier: {value: 1.45, basis: illustrative}
+    cost_multiplier: {value: 1.0, basis: illustrative}
+
+failure_rates:
+  transient_launch_probability: {value: 0.0, basis: illustrative}
+  transient_collect_probability: {value: 0.0, basis: illustrative}
+  permanent_capability_probability: {value: 0.0, basis: illustrative}
